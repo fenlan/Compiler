@@ -9,28 +9,28 @@
 #include <math.h>
 #include <stdbool.h>
 
-enum Token_Type
+enum Token_Type						//　记号种类
 {
-	ORIGIN, SCALE, ROT, IS, TO,
-	STEP, 	DRAW, 	FOR, 	FROM,
-	T,
-	SEMICO, L_BRACKET, R_BRACKET, COMMA,
-	PLUS, MINUS, MUL, DIV, POWER,
-	FUNC,
-	CONST_ID,
-	NONTOKEN,
-	ERRTOKEN
+	ORIGIN, SCALE, ROT, IS, TO,			// 保留字
+	STEP, 	DRAW, 	FOR, 	FROM,			// 保留字
+	T,						// 参数
+	SEMICO, L_BRACKET, R_BRACKET, COMMA,		// 分隔符
+	PLUS, MINUS, MUL, DIV, POWER,			// 运算符
+	FUNC,						// 函数
+	CONST_ID,					// 常数
+	NONTOKEN,					// 空记号
+	ERRTOKEN					// 未识别符号
 };
 
 typedef double (*MathFuncPtr)(double);
-typedef struct Token
+typedef struct Token					// 记号与符号结构
 {
-	Token_Type	type;
-	char		*lexeme;
-	double		value;
-	double		(*FuncPtr)(double);
+	Token_Type	type;				// 记号类别
+	char		*lexeme;			// 构成记号的字符串
+	double		value;				// 记号为常数时，常数的值
+	double		(*FuncPtr)(double);		// 记号为函数时, 函数指针
 } Token;
-static Token TokenTab[] = 
+static Token TokenTab[] = 				// 符号表
 {
 	{CONST_ID,	"PI",		3.1415926,	NULL},
 	{CONST_ID,	"E",		2.71828,	NULL},
@@ -52,9 +52,9 @@ static Token TokenTab[] =
 	{DRAW,		"DRAW",		0.0,		NULL}
 };
 
-extern unsigned int LineNo;
-extern bool InitScanner(const char*);
-extern Token GetToken();
-extern void CloseScanner();
+extern unsigned int LineNo;				// 记录符号在源文件行号
+extern bool InitScanner(const char*);			// 初始化词法分析器
+extern Token GetToken();				// 获取一个记号
+extern void CloseScanner();				// 关闭词法分析器
 
 #endif
