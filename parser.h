@@ -6,7 +6,7 @@
 typedef double (*FuncPtr)(double);
 typedef struct ExprNode
 {
-	Token_type node_type;
+	Token_Type node_type;
 	union
 	{
 		struct {ExprNode *left, *right;} OperatorNode;
@@ -14,7 +14,7 @@ typedef struct ExprNode
 		double ConstNode;
 		double *ParmPtrNode;
 	} Content;
-};
+}ExprNode;
 
 extern void Paraser(char *FileName);
 
