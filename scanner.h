@@ -9,7 +9,7 @@
 #include <math.h>
 #include <stdbool.h>
 
-enum Token_Type						//　记号种类
+typedef enum Token_Type						//　记号种类
 {
 	ORIGIN, SCALE, ROT, IS, TO,			// 保留字
 	STEP, 	DRAW, 	FOR, 	FROM,			// 保留字
@@ -20,13 +20,13 @@ enum Token_Type						//　记号种类
 	CONST_ID,					// 常数
 	NONTOKEN,					// 空记号
 	ERRTOKEN					// 未识别符号
-};
+}Token_Type;
 
 typedef double (*MathFuncPtr)(double);
 typedef struct Token					// 记号与符号结构
 {
 	Token_Type	type;				// 记号类别
-	char		*lexeme;			// 构成记号的字符串
+	const char	*lexeme;			// 构成记号的字符串
 	double		value;				// 记号为常数时，常数的值
 	double		(*FuncPtr)(double);		// 记号为函数时, 函数指针
 } Token;
