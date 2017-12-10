@@ -16,6 +16,6 @@ typedef struct ExprNode
 	} Content;
 }ExprNode;
 
-extern void Paraser(char *FileName);
+extern void Parser(char *FileName);
 
 #endif
