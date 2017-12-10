@@ -1,12 +1,12 @@
 #include "scanner.h"
 
-#define TOKEN_LEN 100				// è®°å·æœ€å¤§é•¿åº¦
-unsigned int LineNo;				// è·Ÿè¸ªæºæ–‡ä»¶è¡Œå·
-static FILE *InFile;				
-static char TokenBuffer[TOKEN_LEN];		// è®°å·å­—ç¬¦ç¼“å†²
+#define TOKEN_LEN 100				// ¼ÇºÅ×î´ó³¤¶È
+unsigned int LineNo;				// ¸ú×ÙÔ´ÎÄ¼şĞĞºÅ
+static FILE *InFile;
+static char TokenBuffer[TOKEN_LEN];		// ¼ÇºÅ×Ö·û»º³å
 
-// -----------åˆå§‹åŒ–è¯æ³•åˆ†æå™¨
-extern bool InitScanner(const char *FileName) 
+										// -----------³õÊ¼»¯´Ê·¨·ÖÎöÆ÷
+extern bool InitScanner(const char *FileName)
 {
 	InFile = fopen(FileName, "r");
 	if (InFile == NULL)		return false;
@@ -16,44 +16,44 @@ extern bool InitScanner(const char *FileName)
 	}
 }
 
-// -----------å…³é—­è¯æ³•åˆ†æå™¨
-extern void CloseScanner() 
+// -----------¹Ø±Õ´Ê·¨·ÖÎöÆ÷
+extern void CloseScanner()
 {
 	if (InFile != NULL)		fclose(InFile);
 }
 
-// -----------ä»è¾“å…¥æºæ–‡ä»¶ä¸­è¯»å–ä¸€ä¸ªå­—ç¬¦
-static char GetChar() 
+// -----------´ÓÊäÈëÔ´ÎÄ¼şÖĞ¶ÁÈ¡Ò»¸ö×Ö·û
+static char GetChar()
 {
 	char _char = fgetc(InFile);
 	return _char;
 }
 
-// -----------å°†è¯»å–çš„å­—ç¬¦é€€å›åˆ°æ–‡ä»¶è¯»å–æµä¸­
-static void BackChar(char _char) 
+// -----------½«¶ÁÈ¡µÄ×Ö·ûÍË»Øµ½ÎÄ¼ş¶ÁÈ¡Á÷ÖĞ
+static void BackChar(char _char)
 {
 	if (_char != EOF)	ungetc(_char, InFile);
 }
 
-// -----------å°†ä¸€ä¸ªå­—ç¬¦æ·»åŠ è¿›å­—ç¬¦ç¼“å†²åŒº,ç­‰å¾…è¯»å–å®Œæˆåˆ¤æ–­å­—ç¬¦ç¼“å†²åŒºä¸­å­—ç¬¦ä¸²æ˜¯å¦æ˜¯è®°å·
+// -----------½«Ò»¸ö×Ö·ûÌí¼Ó½ø×Ö·û»º³åÇø,µÈ´ı¶ÁÈ¡Íê³ÉÅĞ¶Ï×Ö·û»º³åÇøÖĞ×Ö·û´®ÊÇ·ñÊÇ¼ÇºÅ
 static void AddCharTokenString(char _char)
 {
 	int TokenLength = strlen(TokenBuffer);
-	if (TokenLength+1 >= sizeof(TokenBuffer))	return;
+	if (TokenLength + 1 >= sizeof(TokenBuffer))	return;
 	TokenBuffer[TokenLength] = _char;
-	TokenBuffer[TokenLength+1] = '\0'; 
+	TokenBuffer[TokenLength + 1] = '\0';
 }
 
-// -----------åˆ¤æ–­å®Œå­—ç¬¦ä¸²ï¼Œæ¸…ç©ºç¼“å†²åŒº
+// -----------ÅĞ¶ÏÍê×Ö·û´®£¬Çå¿Õ»º³åÇø
 static void EmptyTokenString()
 {
 	memset(TokenBuffer, 0, TOKEN_LEN);
 }
 
-// -----------åˆ¤æ–­ç¼“å†²åŒºä¸­å­—ç¬¦ä¸²æ˜¯å¦æ˜¯è®°å·
+// -----------ÅĞ¶Ï»º³åÇøÖĞ×Ö·û´®ÊÇ·ñÊÇ¼ÇºÅ
 static Token JudgeKeyToken(const char *IDString)
 {
-	for (int i = 0; i < sizeof(TokenTab)/sizeof(TokenTab[0]); ++i)
+	for (int i = 0; i < sizeof(TokenTab) / sizeof(TokenTab[0]); ++i)
 	{
 		if (strcmp(TokenTab[i].lexeme, IDString) == 0)	return TokenTab[i];
 	}
@@ -63,8 +63,8 @@ static Token JudgeKeyToken(const char *IDString)
 	return errorToken;
 }
 
-// -----------é€šè¿‡DFAç¼–å†™çš„å­—ç¬¦è®°å·è¯»å–ï¼Œè°ƒç”¨ä¸€æ¬¡è¯»å–ä¸€ä¸ªè®°å·
-extern Token GetToken() 
+// -----------Í¨¹ıDFA±àĞ´µÄ×Ö·û¼ÇºÅ¶ÁÈ¡£¬µ÷ÓÃÒ»´Î¶ÁÈ¡Ò»¸ö¼ÇºÅ
+extern Token GetToken()
 {
 	char _char;
 	Token token;
@@ -72,7 +72,7 @@ extern Token GetToken()
 	memset(&token, 0, sizeof(Token));
 	EmptyTokenString();
 	token.lexeme = TokenBuffer;
-	while(true) 			// è¿‡æ»¤æ‰ä¸Šä¸€æ¬¡è·å–çš„è®°å·åˆ°è¿™ä¸€æ¬¡è¦è¯»å–çš„è®°å·ä¹‹é—´çš„ç©ºæ ¼ã€Tabã€æ¢è¡Œç­‰
+	while (true) 			// ¹ıÂËµôÉÏÒ»´Î»ñÈ¡µÄ¼ÇºÅµ½ÕâÒ»´ÎÒª¶ÁÈ¡µÄ¼ÇºÅÖ®¼äµÄ¿Õ¸ñ¡¢Tab¡¢»»ĞĞµÈ
 	{
 		_char = GetChar();
 		if (_char == EOF)
@@ -84,9 +84,9 @@ extern Token GetToken()
 		if (!isspace(_char))	break;
 	}
 	AddCharTokenString(_char);
-	if (isalpha(_char))		// å­—ç¬¦è®°å·
+	if (isalpha(_char))		// ×Ö·û¼ÇºÅ
 	{
-		while(true) 
+		while (true)
 		{
 			_char = GetChar();
 			if (isalnum(_char))		AddCharTokenString(_char);
@@ -94,12 +94,12 @@ extern Token GetToken()
 		}
 		BackChar(_char);
 		token = JudgeKeyToken(TokenBuffer);
-		token.lexeme = TokenBuffer;		// é˜²æ­¢æ²¡æœ‰è¯†åˆ«è®°å·æ—¶è¾“å‡ºä¸ºnull
+		token.lexeme = TokenBuffer;		// ·ÀÖ¹Ã»ÓĞÊ¶±ğ¼ÇºÅÊ±Êä³öÎªnull
 		return token;
 	}
-	else if (isdigit(_char))		// æ•°å­—å¸¸æ•°è®°å·
+	else if (isdigit(_char))		// Êı×Ö³£Êı¼ÇºÅ
 	{
-		while(true)
+		while (true)
 		{
 			_char = GetChar();
 			if (isdigit(_char))		AddCharTokenString(_char);
@@ -108,10 +108,10 @@ extern Token GetToken()
 		if (_char == '.')
 		{
 			AddCharTokenString(_char);
-			while(true)
+			while (true)
 			{
 				_char = GetChar();
-				if(isdigit(_char))	AddCharTokenString(_char);
+				if (isdigit(_char))	AddCharTokenString(_char);
 				else				break;
 			}
 		}
@@ -120,56 +120,56 @@ extern Token GetToken()
 		token.value = atof(TokenBuffer);
 		return token;
 	}
-	else {				// æ“ä½œç¬¦å·
-		switch(_char)
+	else {				// ²Ù×÷·ûºÅ
+		switch (_char)
 		{
-			case ';' : token.type = SEMICO		;break;
-			case '(' : token.type = L_BRACKET	;break;
-			case ')' : token.type = R_BRACKET	;break;
-			case ',' : token.type = COMMA		;break;
-			case '+' : token.type = PLUS		;break;
-			case '-' : 
-				_char = GetChar();
-				if(_char == '-')
-				{
-					while(_char != '\n' && _char != EOF)	_char = GetChar();
-					BackChar(_char);
-					return GetToken();
-				}
-				else
-				{
-					BackChar(_char);
-					token.type = MINUS;
-					break;
-				}
-			case '/' :
-				_char = GetChar();
-				if (_char == '/')
-				{
-					while(_char != '\n' && _char != EOF)	_char = GetChar();
-					BackChar(_char);
-					return GetToken();
-				}
-				else
-				{
-					BackChar(_char);
-					token.type = DIV;
-					break;
-				}
-			case '*' :
-				_char = GetChar();
-				if (_char == '*')
-				{
-					token.type = POWER;
-					break;
-				}
-				else
-				{
-					BackChar(_char);
-					token.type = MUL;
-					break;
-				}
-			default : token.type = ERRTOKEN 	;break;
+		case ';': token.type = SEMICO; break;
+		case '(': token.type = L_BRACKET; break;
+		case ')': token.type = R_BRACKET; break;
+		case ',': token.type = COMMA; break;
+		case '+': token.type = PLUS; break;
+		case '-':
+			_char = GetChar();
+			if (_char == '-')
+			{
+				while (_char != '\n' && _char != EOF)	_char = GetChar();
+				BackChar(_char);
+				return GetToken();
+			}
+			else
+			{
+				BackChar(_char);
+				token.type = MINUS;
+				break;
+			}
+		case '/':
+			_char = GetChar();
+			if (_char == '/')
+			{
+				while (_char != '\n' && _char != EOF)	_char = GetChar();
+				BackChar(_char);
+				return GetToken();
+			}
+			else
+			{
+				BackChar(_char);
+				token.type = DIV;
+				break;
+			}
+		case '*':
+			_char = GetChar();
+			if (_char == '*')
+			{
+				token.type = POWER;
+				break;
+			}
+			else
+			{
+				BackChar(_char);
+				token.type = MUL;
+				break;
+			}
+		default: token.type = ERRTOKEN; break;
 		}
 	}
 	return token;

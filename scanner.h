@@ -8,53 +8,54 @@
 #include <stdarg.h>
 #include <math.h>
 #include <stdbool.h>
+#include <atlstr.h>
 
-typedef enum Token_Type						//ã€€è®°å·ç§ç±»
+typedef enum Token_Type						//¡¡¼ÇºÅÖÖÀà
 {
-	ORIGIN, SCALE, ROT, IS, TO,			// ä¿ç•™å­—
-	STEP, 	DRAW, 	FOR, 	FROM,			// ä¿ç•™å­—
-	T,						// å‚æ•°
-	SEMICO, L_BRACKET, R_BRACKET, COMMA,		// åˆ†éš”ç¬¦
-	PLUS, MINUS, MUL, DIV, POWER,			// è¿ç®—ç¬¦
-	FUNC,						// å‡½æ•°
-	CONST_ID,					// å¸¸æ•°
-	NONTOKEN,					// ç©ºè®°å·
-	ERRTOKEN					// æœªè¯†åˆ«ç¬¦å·
+	ORIGIN, SCALE, ROT, IS, TO,			// ±£Áô×Ö
+	STEP, DRAW, FOR, FROM,			// ±£Áô×Ö
+	T,						// ²ÎÊı
+	SEMICO, L_BRACKET, R_BRACKET, COMMA,		// ·Ö¸ô·û
+	PLUS, MINUS, MUL, DIV, POWER,			// ÔËËã·û
+	FUNC,						// º¯Êı
+	CONST_ID,					// ³£Êı
+	NONTOKEN,					// ¿Õ¼ÇºÅ
+	ERRTOKEN					// Î´Ê¶±ğ·ûºÅ
 }Token_Type;
 
-typedef double (*MathFuncPtr)(double);
-typedef struct Token					// è®°å·ä¸ç¬¦å·ç»“æ„
+typedef double(*MathFuncPtr)(double);
+typedef struct Token					// ¼ÇºÅÓë·ûºÅ½á¹¹
 {
-	Token_Type	type;				// è®°å·ç±»åˆ«
-	const char	*lexeme;			// æ„æˆè®°å·çš„å­—ç¬¦ä¸²
-	double		value;				// è®°å·ä¸ºå¸¸æ•°æ—¶ï¼Œå¸¸æ•°çš„å€¼
-	double		(*FuncPtr)(double);		// è®°å·ä¸ºå‡½æ•°æ—¶, å‡½æ•°æŒ‡é’ˆ
+	Token_Type	type;				// ¼ÇºÅÀà±ğ
+	const char	*lexeme;			// ¹¹³É¼ÇºÅµÄ×Ö·û´®
+	double		value;				// ¼ÇºÅÎª³£ÊıÊ±£¬³£ÊıµÄÖµ
+	double(*FuncPtr)(double);		// ¼ÇºÅÎªº¯ÊıÊ±, º¯ÊıÖ¸Õë
 } Token;
-static Token TokenTab[] = 				// ç¬¦å·è¡¨
+static Token TokenTab[] = 				// ·ûºÅ±í
 {
-	{CONST_ID,	"PI",		3.1415926,	NULL},
-	{CONST_ID,	"E",		2.71828,	NULL},
-	{T,			"T",		0.0,		NULL},
-	{FUNC,		"SIN",		0.0,		sin},
-	{FUNC,		"COS",		0.0,		cos},
-	{FUNC,		"TAN",		0.0,		tan},
-	{FUNC,		"LN",		0.0,		log},
-	{FUNC,		"EXP",		0.0,		exp},
-	{FUNC,		"SQRT",		0.0,		sqrt},
-	{ORIGIN,	"ORIGIN",	0.0,		NULL},
-	{SCALE,		"SCALE",	0.0,		NULL},
-	{ROT,		"ROT",		0.0,		NULL},
-	{IS,		"IS",		0.0,		NULL},
-	{FOR,		"FOR",		0.0,		NULL},
-	{FROM,		"FROM",		0.0,		NULL},
-	{TO,		"TO",		0.0,		NULL},
-	{STEP,		"STEP",		0.0,		NULL},
-	{DRAW,		"DRAW",		0.0,		NULL}
+	{ CONST_ID,	"PI",		3.1415926,	NULL },
+	{ CONST_ID,	"E",		2.71828,	NULL },
+	{ T,			"T",		0.0,		NULL },
+	{ FUNC,		"SIN",		0.0,		sin },
+	{ FUNC,		"COS",		0.0,		cos },
+	{ FUNC,		"TAN",		0.0,		tan },
+	{ FUNC,		"LN",		0.0,		log },
+	{ FUNC,		"EXP",		0.0,		exp },
+	{ FUNC,		"SQRT",		0.0,		sqrt },
+	{ ORIGIN,	"ORIGIN",	0.0,		NULL },
+	{ SCALE,		"SCALE",	0.0,		NULL },
+	{ ROT,		"ROT",		0.0,		NULL },
+	{ IS,		"IS",		0.0,		NULL },
+	{ FOR,		"FOR",		0.0,		NULL },
+	{ FROM,		"FROM",		0.0,		NULL },
+	{ TO,		"TO",		0.0,		NULL },
+	{ STEP,		"STEP",		0.0,		NULL },
+	{ DRAW,		"DRAW",		0.0,		NULL }
 };
 
-extern unsigned int LineNo;				// è®°å½•ç¬¦å·åœ¨æºæ–‡ä»¶è¡Œå·
-extern bool InitScanner(const char*);			// åˆå§‹åŒ–è¯æ³•åˆ†æå™¨
-extern Token GetToken();				// è·å–ä¸€ä¸ªè®°å·
-extern void CloseScanner();				// å…³é—­è¯æ³•åˆ†æå™¨
+extern unsigned int LineNo;				// ¼ÇÂ¼·ûºÅÔÚÔ´ÎÄ¼şĞĞºÅ
+extern bool InitScanner(const char*);			// ³õÊ¼»¯´Ê·¨·ÖÎöÆ÷
+extern Token GetToken();				// »ñÈ¡Ò»¸ö¼ÇºÅ
+extern void CloseScanner();				// ¹Ø±Õ´Ê·¨·ÖÎöÆ÷
 
 #endif
