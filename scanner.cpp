@@ -1,5 +1,5 @@
 #include "scanner.h"
-
+ 
 #define TOKEN_LEN 100				// 记号最大长度
 unsigned int LineNo;				// 跟踪源文件行号
 static FILE *InFile;				
