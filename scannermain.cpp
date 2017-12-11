@@ -1,7 +1,7 @@
 #include "scanner.h"
 
 int main(int argc, char *argv[])
-{
+{ 
 	Token token;
 	if(argc < 2)
 	{
