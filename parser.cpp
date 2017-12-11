@@ -1,6 +1,6 @@
 #include "parser.h"
 
-// #define PARSER_DEBUG
+#define PARSER_DEBUG
 
 #ifndef PARSER_DEBUG
 	#include "semantics.h"
