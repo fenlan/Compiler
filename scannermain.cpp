@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 	{
 		printf("Open Source File Error!\n");
 	}
-	printf("Token_type    String    Const    FuncP\n");
+	printf("Token_type    String    Const    FuncP \n");
 	printf("_______________________________________________\n");
 	while(true)
 	{
